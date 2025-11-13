@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - claude/app-ideas-sample-011CV5t5vhYk29Zd2gBoMVfa
 
 permissions:
   contents: read
