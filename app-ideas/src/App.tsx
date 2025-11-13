@@ -6,7 +6,7 @@ import { Notes } from './pages/Notes'
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/claude-code-samples">
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Bin2Dec />} />
