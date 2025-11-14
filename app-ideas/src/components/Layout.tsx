@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
-import { Menu, X, Binary, Calculator as CalcIcon, StickyNote } from 'lucide-react'
+import { Menu, X, Binary, Calculator as CalcIcon, StickyNote, Car } from 'lucide-react'
 import { Button } from './ui/button'
 
 const navigation = [
   { name: 'Bin2Dec', href: '/', icon: Binary },
   { name: 'Calculator', href: '/calculator', icon: CalcIcon },
   { name: 'Notes', href: '/notes', icon: StickyNote },
+  { name: 'Car Sales', href: '/car-sales', icon: Car },
 ]
 
 export function Layout() {

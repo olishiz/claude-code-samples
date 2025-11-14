@@ -3,6 +3,7 @@ import { Layout } from './components/Layout'
 import { Bin2Dec } from './pages/Bin2Dec'
 import { Calculator } from './pages/Calculator'
 import { Notes } from './pages/Notes'
+import { CarSales } from './pages/CarSales'
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
           <Route index element={<Bin2Dec />} />
           <Route path="calculator" element={<Calculator />} />
           <Route path="notes" element={<Notes />} />
+          <Route path="car-sales" element={<CarSales />} />
         </Route>
       </Routes>
     </BrowserRouter>
