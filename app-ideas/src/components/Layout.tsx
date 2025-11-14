@@ -1,97 +1,212 @@
 import { useState } from 'react'
 import { Link, Outlet, useLocation } from 'react-router-dom'
-import { Menu, X, Binary, Calculator as CalcIcon, StickyNote, Car } from 'lucide-react'
-import { Button } from './ui/button'
+import {
+  AppBar,
+  Box,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Toolbar,
+  Typography,
+  useMediaQuery,
+  useTheme,
+  Divider,
+  Avatar,
+} from '@mui/material'
+import MenuIcon from '@mui/icons-material/Menu'
+import HomeIcon from '@mui/icons-material/Home'
+import TransformIcon from '@mui/icons-material/Transform'
+import CalculateIcon from '@mui/icons-material/Calculate'
+import StickyNote2Icon from '@mui/icons-material/StickyNote2'
+import DirectionsCarIcon from '@mui/icons-material/DirectionsCar'
 
-const navigation = [
-  { name: 'Bin2Dec', href: '/', icon: Binary },
-  { name: 'Calculator', href: '/calculator', icon: CalcIcon },
-  { name: 'Notes', href: '/notes', icon: StickyNote },
-  { name: 'Car Sales', href: '/car-sales', icon: Car },
+const drawerWidth = 240
+
+interface NavigationItem {
+  name: string
+  href: string
+  icon: React.ReactElement
+}
+
+const navigation: NavigationItem[] = [
+  { name: 'Home', href: '/', icon: <HomeIcon /> },
+  { name: 'Bin2Dec', href: '/bin2dec', icon: <TransformIcon /> },
+  { name: 'Calculator', href: '/calculator', icon: <CalculateIcon /> },
+  { name: 'Notes', href: '/notes', icon: <StickyNote2Icon /> },
+  { name: 'Car Sales', href: '/car-sales', icon: <DirectionsCarIcon /> },
 ]
 
 export function Layout() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
   const location = useLocation()
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen)
+  }
+
+  const drawer = (
+    <Box>
+      <Box sx={{ p: 2, display: 'flex', alignItems: 'center', gap: 1.5 }}>
+        <Avatar
+          sx={{
+            bgcolor: 'primary.main',
+            width: 40,
+            height: 40,
+          }}
+        >
+          A
+        </Avatar>
+        <Box>
+          <Typography variant="h6" fontWeight={700} sx={{ lineHeight: 1.2 }}>
+            App Ideas
+          </Typography>
+          <Typography variant="caption" color="text.secondary">
+            Collection
+          </Typography>
+        </Box>
+      </Box>
+      <Divider />
+      <List sx={{ pt: 2 }}>
+        {navigation.map((item) => {
+          const isActive = location.pathname === item.href
+          return (
+            <ListItem key={item.name} disablePadding sx={{ px: 1 }}>
+              <ListItemButton
+                component={Link}
+                to={item.href}
+                onClick={() => isMobile && setMobileOpen(false)}
+                selected={isActive}
+                sx={{
+                  borderRadius: 2,
+                  mb: 0.5,
+                  '&.Mui-selected': {
+                    bgcolor: 'primary.main',
+                    color: 'primary.contrastText',
+                    '&:hover': {
+                      bgcolor: 'primary.dark',
+                    },
+                    '& .MuiListItemIcon-root': {
+                      color: 'primary.contrastText',
+                    },
+                  },
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 40,
+                    color: isActive ? 'inherit' : 'text.secondary',
+                  }}
+                >
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText
+                  primary={item.name}
+                  primaryTypographyProps={{
+                    fontWeight: isActive ? 600 : 400,
+                  }}
+                />
+              </ListItemButton>
+            </ListItem>
+          )
+        })}
+      </List>
+    </Box>
+  )
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-        <div className="container flex h-14 items-center">
-          <div className="mr-4 flex">
-            <Link to="/" className="mr-6 flex items-center space-x-2">
-              <span className="font-bold text-lg">App Ideas</span>
-            </Link>
-          </div>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex flex-1 items-center space-x-6 text-sm font-medium">
-            {navigation.map((item) => {
-              const Icon = item.icon
-              const isActive = location.pathname === item.href
-              return (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`flex items-center space-x-2 transition-colors hover:text-foreground/80 ${
-                    isActive ? 'text-foreground' : 'text-foreground/60'
-                  }`}
-                >
-                  <Icon className="h-4 w-4" />
-                  <span>{item.name}</span>
-                </Link>
-              )
-            })}
-          </nav>
-
-          {/* Mobile menu button */}
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden ml-auto"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+      {/* AppBar */}
+      <AppBar
+        position="fixed"
+        elevation={0}
+        sx={{
+          width: { md: `calc(100% - ${drawerWidth}px)` },
+          ml: { md: `${drawerWidth}px` },
+          borderBottom: 1,
+          borderColor: 'divider',
+          bgcolor: 'background.paper',
+          color: 'text.primary',
+        }}
+      >
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 2, display: { md: 'none' } }}
           >
-            {mobileMenuOpen ? (
-              <X className="h-5 w-5" />
-            ) : (
-              <Menu className="h-5 w-5" />
-            )}
-          </Button>
-        </div>
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap component="div" fontWeight={600}>
+            {navigation.find((item) => item.href === location.pathname)?.name || 'App Ideas'}
+          </Typography>
+        </Toolbar>
+      </AppBar>
 
-        {/* Mobile Navigation */}
-        {mobileMenuOpen && (
-          <div className="md:hidden border-t">
-            <nav className="container py-4 space-y-3">
-              {navigation.map((item) => {
-                const Icon = item.icon
-                const isActive = location.pathname === item.href
-                return (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`flex items-center space-x-3 px-3 py-2 rounded-md transition-colors ${
-                      isActive
-                        ? 'bg-accent text-accent-foreground'
-                        : 'hover:bg-accent hover:text-accent-foreground'
-                    }`}
-                  >
-                    <Icon className="h-5 w-5" />
-                    <span className="font-medium">{item.name}</span>
-                  </Link>
-                )
-              })}
-            </nav>
-          </div>
-        )}
-      </header>
+      {/* Drawer */}
+      <Box
+        component="nav"
+        sx={{ width: { md: drawerWidth }, flexShrink: { md: 0 } }}
+      >
+        {/* Mobile drawer */}
+        <Drawer
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true, // Better open performance on mobile.
+          }}
+          sx={{
+            display: { xs: 'block', md: 'none' },
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
+              width: drawerWidth,
+            },
+          }}
+        >
+          {drawer}
+        </Drawer>
 
-      {/* Main Content */}
-      <main className="container py-6">
-        <Outlet />
-      </main>
-    </div>
+        {/* Desktop drawer */}
+        <Drawer
+          variant="permanent"
+          sx={{
+            display: { xs: 'none', md: 'block' },
+            '& .MuiDrawer-paper': {
+              boxSizing: 'border-box',
+              width: drawerWidth,
+              borderRight: 1,
+              borderColor: 'divider',
+            },
+          }}
+          open
+        >
+          {drawer}
+        </Drawer>
+      </Box>
+
+      {/* Main content */}
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          width: { md: `calc(100% - ${drawerWidth}px)` },
+          minHeight: '100vh',
+          bgcolor: 'background.default',
+        }}
+      >
+        <Toolbar />
+        <Box sx={{ p: 3 }}>
+          <Outlet />
+        </Box>
+      </Box>
+    </Box>
   )
 }
